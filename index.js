@@ -73,7 +73,39 @@ const run = async () => {
         });
 
 
-        
+        app.get('/api/billing-list', async (req, res) => {
+            const bills = (await billCollection.find({}).toArray()).reverse();
+            res.send(bills)
+
+        });
+
+
+
+        app.post('/api/add-billing', verifyToken, async (req, res) => {
+            const bill = req.body;
+            const result = await billCollection.insertOne(bill);
+            res.send(result)
+        });
+
+        app.put('/api/update-billing/:id', verifyToken, async (req, res) => {
+            const id = req.params?.id;
+            const bill = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: bill
+            }
+            const result = await billCollection.updateOne(filter, updatedDoc, options);
+            res.send(result)
+        });
+
+        app.delete('/api/delete-billing/:id', verifyToken, async (req, res) => {
+            const id = req.params?.id;
+            const result = await billCollection.deleteOne({ _id: ObjectId(id) })
+            res.send(result)
+        });
+
+
 
     } finally {
 
