@@ -46,7 +46,34 @@ const run = async () => {
         const billCollection = client.db('billing_system').collection('billing-list');
 
 
-       
+        app.post('/api/login', async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            if (user) {
+                const exist = await userCollection.findOne({ email: user.email, password: user.password })
+                if (exist) {
+                    const token = jwt.sign({ email: user.email }, process.env.ACCESS_SECRET, { expiresIn: '1d' })
+                    res.status(200).send({ success: true, token })
+                } else {
+                    res.send({ error: true, message: 'email or password does not match' })
+                }
+            }
+
+        });
+
+        app.post('/api/registration', async (req, res) => {
+            const user = req.body;
+            const exist = await userCollection.findOne({ email: user.email })
+            if (!exist) {
+                const result = await userCollection.insertOne(user);
+                res.status(201).send({ result })
+            } else {
+                res.send({ user: user.email, message: "User already exist" })
+            }
+        });
+
+
+        
 
     } finally {
 
