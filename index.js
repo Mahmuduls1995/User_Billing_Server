@@ -39,6 +39,8 @@ const run = async () => {
         const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.g697s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
+        
         await client.connect();
         console.log('db connected');
 
@@ -112,12 +114,6 @@ const run = async () => {
     }
 }
 run().catch(console.dir);
-
-
-
-
-
-
 
 
 
